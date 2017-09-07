@@ -1,6 +1,3 @@
-***来源：***
-
-https://leetcode.com/problems/two-sum/description/
 
 ***问题描述：***
 
