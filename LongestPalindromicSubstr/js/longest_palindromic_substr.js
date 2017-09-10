@@ -2,23 +2,29 @@
  * @param {string} s
  * @return {string}
  */
-var longestPalindrome = function(s) {
+ var longestPalindrome = function(s) {
 
-   var _ = function(str){
-       for(var i = 0, j = str.length - 1; i < j; i++, j--){
-           if(str[i] !== str[j]){
-               return false;
-           }
-       }
-       return true;
-   };
-   for(var l = s.length; l > 0; l--){
-        for(var start = s.length - l; start >= 0; start--){
-            var str = s.slice(start, start + l);
-            if(_(str)){
-                return str;
-            }
+     var start = 0,
+         end = 0;
+
+     var _ = function(str, left, right){
+       while(left >= 0 && right < str.length && str.charAt(left) === str.charAt(right)){
+            left--;
+            right++;
         }
-    }
-    return null;
-};
+        return right - left - 1;
+    };
+
+     for(var i = 0; i < s.length; i++){
+         var len_odd = _(s, i, i);
+         var len_even = _(s, i, i + 1);
+         var maxLen = (len_odd > len_even) ? len_odd : len_even;
+         if(maxLen >= (end - start + 1)){
+             start = i - Math.floor((maxLen - 1) / 2);
+             end = i + Math.floor(maxLen / 2);
+         }
+     }
+     return s.slice(start, end + 1);
+ };
+
+ //console.log(longestPalindrome("ababde"));
