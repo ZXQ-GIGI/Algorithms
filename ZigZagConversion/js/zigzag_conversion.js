@@ -30,5 +30,3 @@
      }
      return str;
  };
-
-console.log(convert('AAqwee',3));
