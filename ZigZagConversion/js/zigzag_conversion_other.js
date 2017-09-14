@@ -7,7 +7,7 @@
  var convert = function(s, numRows) {
 
      var temp = [];
-     for(var i = 0; i < numRows; i++){
+     for(var i = 0; i < numRows; i++) {
          temp[i] = '';
      }
      var j = 0;
@@ -18,7 +18,6 @@
          for(var m = numRows - 2; m > 0 && j < s.length; m--) {
              temp[m] += s[j++];
          }
-         console.log(temp);
      }
      for(var n = 1; n < numRows; n++) {
          temp[0] += temp[n];
