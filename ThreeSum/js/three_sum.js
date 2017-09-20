@@ -3,12 +3,13 @@
  * @return {number[][]}
  */
 var threeSum = function(nums) {
-    var arrs = [];
-
-    function _compare(num1, num2) {
-        if (num1 > num2) {
+    var arrs = [],
+        bound = nums.length,
+        zero = 0;
+    function _compare(value1, value2) {
+        if (value1 > value2) {
             return 1;
-        } else if (num1 === num2) {
+        } else if (value1 === value2) {
             return 0;
         } else {
             return -1;
@@ -22,35 +23,57 @@ var threeSum = function(nums) {
         }
         return false;
     }
-    var i = 0,
-        j = 1,
-        m = 2;
     nums = nums.sort(_compare);
-    while(i < j && j < m && m < nums.length && nums[i] <= 0) {
-        var tmp = [nums[i], nums[j], nums[m]];
-        if(nums[i] + nums[j] + nums[m] === 0 && !_isExist(arrs, tmp)) {
-            arrs.push(tmp);
-            j++;
-            m = j+1;
-            if (j == nums.length - 1) {
-                i++;
-                j = i + 1;
-                m = j + 1;
-           }
-        } else {
-            m++;
+    console.log("," + nums);
+    if(nums.length < 3) {
+        return arrs;
+    }
+    for(var x = 0; x < nums.length; x++) {
+        if(nums[x] >= 0) {
+            bound = x;
+            break;
         }
-        if(m == nums.length) {
-            j++;
-            m = j + 1;
-            if(j == nums.length - 1){
-                i++;
-                j = i + 1;
-                m = j + 1;
+    }
+    console.log(bound);
+    zero = (nums.indexOf(0) >= 0) ? nums.lastIndexOf(0) - nums.indexOf(0) + 1 : 0;
+    var pos = 0;
+    if (zero >= 3) {
+        pos = 1;
+    }
+    //-----------
+    for(var i = 0; i < bound + pos; i++) {
+        var middle = 0,
+            start = 0,
+            end = 0;
+
+        for(var m = nums.length - 1; m >= bound - pos; m--) {
+            console.log("---i: " + i + ",m: " + m);
+            var num2 = 0 - nums[i] - nums[m];
+            if(num2 >= 0) {
+                start = bound;
+                end = m - 1;
+            } else {
+                start = i + 1;
+                end = bound - 1;
+            }
+            while(start <= end) {
+                console.log("start: " + start + " ,end: " + end);
+                middle = Math.floor((start + end) / 2);
+                if(nums[middle] === num2 && !_isExist(arrs, [nums[i],nums[middle],nums[m]])) {
+                    arrs.push([nums[i],nums[middle],nums[m]]);
+                    break;
+                }
+                else if(nums[middle] > num2) {
+                    end = middle - 1;
+                } else {
+                    start = middle + 1;
+                }
             }
         }
+
     }
     return arrs;
 };
 
-console.log(threeSum([-11,-3,-6,12,-15,-13,-7,-3,13,-2,-10,3,12,-12,6,-6,12,9,-2,-12,14,11,-4,11,-8,8,0,-12,4,-5,10,8,7,11,-3,7,5,-3,-11,3,11,-13,14,8,12,5,-12,10,-8,-7,5,-9,-11,-14,9,-12,1,-6,-8,-10,4,9,6,-3,-3,-12,11,9,1,8,-10,-3,2,-11,-10,-1,1,-15,-6,8,-7,6,6,-10,7,0,-7,-7,9,-8,-9,-9,-14,12,-5,-10,-15,-9,-15,-7,6,-10,5,-7,-14,3,8,2,3,9,-12,4,1,9,1,-15,-13,9,-14,11,9]));
+
+ //console.log(threeSum([6,-5,-6,-1,-2,8,-1,4,-10,-8,-10,-2,-4,-1,-8,-2,8,9,-5,-2,-8,-9,-3,-5]));
