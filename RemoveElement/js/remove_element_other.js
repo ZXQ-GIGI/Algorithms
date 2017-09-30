@@ -10,5 +10,5 @@ var removeElement = function(nums, val) {
             nums[i++] = nums[j];
         }
     }
-    return i + 1;
+    return i;
 };

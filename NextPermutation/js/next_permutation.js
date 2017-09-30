@@ -6,7 +6,7 @@ var nextPermutation = function(nums) {
     var tmp = 0;
     for(var i = nums.length - 2; i >= 0; i--) {
         if(nums[i] >= nums[nums.length - 1]) {
-            nums.push(parseInt(nums.splice(i-1,1).join('')));
+            nums.push(parseInt(nums.splice(i,1).join('')));
         } else {
             for(var j = i + 1; j < nums.length; j++){
                 if(nums[j] > nums[i]) {
@@ -19,5 +19,4 @@ var nextPermutation = function(nums) {
             }
         }
     }
-
 };
