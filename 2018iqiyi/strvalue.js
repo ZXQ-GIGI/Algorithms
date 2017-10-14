@@ -1,3 +1,11 @@
+/**
+ * 按以下方法计算一个字符串的值
+ * 给定一个字符串 aadeseedfss
+ * 其中 a:2 d:2 e:3 s:3
+ * 则 值 = 2*2 + 2*2 + 3*3 + 3* 3
+ * 给定一个值k，允许去掉k个字符串中的字符，使得字符串的值最小
+ */
+
 var readline = require('readline');
 const rl = readline.createInterface({
     input: process.stdin,
