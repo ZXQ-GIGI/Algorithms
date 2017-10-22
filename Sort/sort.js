@@ -54,37 +54,40 @@ Sort.prototype.simpleSelectionSort = function (array) {
 Sort.prototype.heapSort = function (array) {
     //堆向下调整
     function adjustHeap(array, index) {
-
+        var lChild = index * 2;
         while(index <= array.length) {
             var lChild = index * 2,
-                rChild = lChild;
-            if(array[lChild]) {
-                rChild = index * 2 + 1;
+                rChild = lChild + 1;
+            if(lChild > array.length) {
+                return;
+            }
+            if(lChild + 1 > array.length) {
+                rChild--;
             }
             var min = array[lChild - 1] <= array[rChild - 1] ? lChild : rChild;
-            if(array[index - 1] > array[min]) {
+            if(array[index - 1] > array[min - 1]) {
                 var tmp = array[index - 1];
                 array[index - 1] = array[min - 1];
                 array[min - 1] = tmp;
                 index = min;
             } else {
-                break;
+                return;
             }
         }
-        //return array;
     }
     //创建最小堆
     function createHeap(array) {
         for(var i = Math.floor(array.length / 2); i >= 1; i--){
-            console.log(i);
             adjustHeap(array, i);
-            console.log(array);
         }
-        //return array;
     }
 
-    createHeap(array);
-
+    var tmp = array.slice(0);
+    for(var i = 0; i < array.length; i++) {
+        createHeap(tmp);
+        array[i] = tmp[0];
+        tmp[0] = tmp.pop();
+    }
     console.log(array);
 };
 
