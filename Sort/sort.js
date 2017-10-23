@@ -52,7 +52,7 @@ Sort.prototype.simpleSelectionSort = function (array) {
 };
 
 Sort.prototype.heapSort = function (array) {
-    //堆向下调整
+    //downward adjustment
     function adjustHeap(array, index) {
         var lChild = index * 2;
         while(index <= array.length) {
@@ -75,7 +75,7 @@ Sort.prototype.heapSort = function (array) {
             }
         }
     }
-    //创建最小堆
+    //create min-heap
     function createHeap(array) {
         for(var i = Math.floor(array.length / 2); i >= 1; i--){
             adjustHeap(array, i);
@@ -88,11 +88,34 @@ Sort.prototype.heapSort = function (array) {
         array[i] = tmp[0];
         tmp[0] = tmp.pop();
     }
-    console.log(array);
+    return array;
 };
 
 Sort.prototype.bubbleSort = function (array) {
-
+    //bubble with both direction
+    var low = 0,
+        high = array.length - 1;
+    while(low < high) {
+        //find max
+        for(var j = low; j < high; j++) {
+            if(array[j] > array[j + 1]) {
+                var tmp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = tmp;
+            }
+        }
+        //find min
+        for(var m = high; m > low; m--) {
+            if(array[m] < array[m - 1]) {
+                var tmp = array[m];
+                array[m] = array[m - 1];
+                array[m - 1] = tmp;
+            }
+        }
+        low++;
+        high--;
+    }
+    return array;
 };
 
 Sort.prototype.quickSort = function (array) {

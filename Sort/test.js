@@ -6,7 +6,7 @@ var test = new sort();
 //console.log(test.straightInsertionSort(array));
 //console.log(test.shellInsertionSort(array));
 //console.log(test.simpleSelectionSort(array));
-console.log(test.heapSort(array));
+//console.log(test.heapSort(array));
 console.log(test.bubbleSort(array));
 console.log(test.quickSort(array));
 console.log(test.mergeSort(array));
