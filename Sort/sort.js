@@ -1,54 +1,58 @@
 
 module.exports = Sort;
+
 function Sort(array) {
 };
 
 Sort.prototype.straightInsertionSort = function (array) {
-    for(var i = 1; i < array.length; i++) {
-        if(array[i-1] > array[i]) {
+    var result = array.slice(0);
+    for(var i = 1; i < result.length; i++) {
+        if(result[i-1] > result[i]) {
             var index = i - 1;
-            while(array[index] > array[i] && index >= 0){
+            while(result[index] > result[i] && index >= 0){
                 index--;
             }
-            array.splice(index + 1, 0, array[i]);
-            array.splice(i + 1, 1);
+            result.splice(index + 1, 0, result[i]);
+            result.splice(i + 1, 1);
         }
     }
-    return array;
+    return result;
 };
 
 Sort.prototype.shellInsertionSort = function (array) {
-    var gap = Math.floor(array.length / 2);
+    var result = array.slice(0);
+    var gap = Math.floor(result.length / 2);
     while(gap >= 1) {
-        for(var i = gap; i < array.length; i++) {
-            if(array[i-1] > array[i]) {
-                var index = i - 1;
-                while(array[index] > array[i] && index >= 0){
+        for(var i = gap; i < result.length; i++) {
+            if(result[i - gap] > result[i]) {
+                var index = i - gap;
+                while(result[index] > result[i] && index >= 0){
                     index -= gap;
                 }
-                array.splice(index + gap, 0, array[i]);
-                array.splice(i + gap, 1);
+                result.splice(index + gap, 0, result[i]);
+                result.splice(i + 1, 1);
             }
         }
         gap = Math.floor(gap / 2);
     }
-    return array;
+    return result;
 };
 
 Sort.prototype.simpleSelectionSort = function (array) {
-    for(var i = 0; i < array.length; i++){
+    var result = array.slice(0);
+    for(var i = 0; i < result.length; i++){
         var min = i,
             tmp = 0;
-        for(var j = i + 1; j < array.length; j++) {
-            if(array[j] < array[min]) {
+        for(var j = i + 1; j < result.length; j++) {
+            if(result[j] < result[min]) {
                 min = j;
             }
         }
-        tmp = array[min];
-        array[min] = array[i];
-        array[i] = tmp;
+        tmp = result[min];
+        result[min] = result[i];
+        result[i] = tmp;
     }
-    return array;
+    return result;
 };
 
 Sort.prototype.heapSort = function (array) {
@@ -82,48 +86,110 @@ Sort.prototype.heapSort = function (array) {
         }
     }
 
-    var tmp = array.slice(0);
+    var tmp = array.slice(0),
+        result = [];
     for(var i = 0; i < array.length; i++) {
         createHeap(tmp);
-        array[i] = tmp[0];
+        result.push(tmp[0]);
         tmp[0] = tmp.pop();
     }
-    return array;
+    return result;
 };
 
 Sort.prototype.bubbleSort = function (array) {
     //bubble with both direction
-    var low = 0,
-        high = array.length - 1;
+    var result = array.slice(0),
+        low = 0,
+        high = result.length - 1;
     while(low < high) {
         //find max
         for(var j = low; j < high; j++) {
-            if(array[j] > array[j + 1]) {
-                var tmp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = tmp;
+            if(result[j] > result[j + 1]) {
+                var tmp = result[j];
+                result[j] = result[j + 1];
+                result[j + 1] = tmp;
             }
         }
         //find min
         for(var m = high; m > low; m--) {
-            if(array[m] < array[m - 1]) {
-                var tmp = array[m];
-                array[m] = array[m - 1];
-                array[m - 1] = tmp;
+            if(result[m] < result[m - 1]) {
+                var tmp = result[m];
+                result[m] = result[m - 1];
+                result[m - 1] = tmp;
             }
         }
         low++;
         high--;
     }
-    return array;
+    return result;
 };
 
 Sort.prototype.quickSort = function (array) {
-
+    function partition(array, low, high) {
+        var i = low,
+            j = high,
+            key = array[i];
+        while(i < j) {
+            while(array[j] >= key && j > i) {
+                j--;
+            }
+            if(array[j] < key) {
+                array[i] = array[j];
+                array[j] = key;
+            }
+            while(array[i] <= key && j > i) {
+                i++;
+            }
+            if(array[i] > key) {
+                array[j] = array[i];
+                array[i] = key;
+            }
+        }
+        return i;
+    }
+    function dfs(array, low, high) {
+        if(low >= high){
+            return;
+        }
+        var pos = partition(array, low, high);
+        //console.log(pos);
+        dfs(array, 0, pos - 1);
+        dfs(array, pos + 1, high);
+    }
+    var result = array.slice(0);
+    dfs(result, 0, result.length);
+    return result;
 };
 
 Sort.prototype.mergeSort = function (array) {
-
+    var result = array.slice(0);
+    for(var i = 0; i < result.length; i++) {
+        result[i] = [result[i]];
+    }
+    //console.log(result);
+    for(var i = 0; i < result.length; i++) {
+        if(result.length == 1) {
+            return result[0];
+        }
+        if(result[i + 1] != undefined) {
+            var left = result[i];
+            var right = result[i + 1];
+            var tmp = [];
+            //console.log(left,right);
+            while(left.length > 0 || right.length > 0) {
+                if(left[0] <= right[0] || (left[0] && right[0]) == undefined) {
+                    tmp.push(left.shift());
+                }
+                if(left[0] > right[0] || (left[0] == undefined && right[0])){
+                    tmp.push(right.shift());
+                }
+            }
+            result.splice(i, 2, tmp);
+            //console.log(i, result);
+        } else {
+            i = 0;
+        }
+    }
 };
 
 Sort.prototype.radixSort = function (array) {
