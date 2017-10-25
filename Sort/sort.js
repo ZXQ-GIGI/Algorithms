@@ -56,7 +56,7 @@ Sort.prototype.simpleSelectionSort = function (array) {
 };
 
 Sort.prototype.heapSort = function (array) {
-    //downward adjustment
+    // downward adjustment
     function adjustHeap(array, index) {
         var lChild = index * 2;
         while(index <= array.length) {
@@ -79,7 +79,7 @@ Sort.prototype.heapSort = function (array) {
             }
         }
     }
-    //create min-heap
+    // create min-heap
     function createHeap(array) {
         for(var i = Math.floor(array.length / 2); i >= 1; i--){
             adjustHeap(array, i);
@@ -97,12 +97,12 @@ Sort.prototype.heapSort = function (array) {
 };
 
 Sort.prototype.bubbleSort = function (array) {
-    //bubble with both direction
+    // bubble with both direction
     var result = array.slice(0),
         low = 0,
         high = result.length - 1;
     while(low < high) {
-        //find max
+        // find max
         for(var j = low; j < high; j++) {
             if(result[j] > result[j + 1]) {
                 var tmp = result[j];
@@ -110,7 +110,7 @@ Sort.prototype.bubbleSort = function (array) {
                 result[j + 1] = tmp;
             }
         }
-        //find min
+        // find min
         for(var m = high; m > low; m--) {
             if(result[m] < result[m - 1]) {
                 var tmp = result[m];
@@ -152,12 +152,11 @@ Sort.prototype.quickSort = function (array) {
             return;
         }
         var pos = partition(array, low, high);
-        //console.log(pos);
         dfs(array, 0, pos - 1);
         dfs(array, pos + 1, high);
     }
     var result = array.slice(0);
-    dfs(result, 0, result.length);
+    dfs(result, 0, result.length - 1);
     return result;
 };
 
@@ -166,16 +165,15 @@ Sort.prototype.mergeSort = function (array) {
     for(var i = 0; i < result.length; i++) {
         result[i] = [result[i]];
     }
-    //console.log(result);
-    for(var i = 0; i < result.length; i++) {
+
+    for(var i = 0; i <= result.length; i++) {
         if(result.length == 1) {
             return result[0];
         }
-        if(result[i + 1] != undefined) {
+        if(result[i] != undefined && result[i + 1] != undefined) {
             var left = result[i];
             var right = result[i + 1];
             var tmp = [];
-            //console.log(left,right);
             while(left.length > 0 || right.length > 0) {
                 if(left[0] <= right[0] || (left[0] && right[0]) == undefined) {
                     tmp.push(left.shift());
@@ -184,14 +182,45 @@ Sort.prototype.mergeSort = function (array) {
                     tmp.push(right.shift());
                 }
             }
-            result.splice(i, 2, tmp);
-            //console.log(i, result);
+            result.splice(i, 2, tmp); // remove two merged array and add new array
         } else {
-            i = 0;
+            i = -1; // new sort start
         }
     }
 };
 
 Sort.prototype.radixSort = function (array) {
+    var result = array.slice(0);
+    var mark = [];
+    var bit = 1;
+    //init mark and length equals 10(0-9)
+    function initMark() {
+        for(var n = 0; n < 10; n++) {
+            mark[n] = [];
+        }
+    }
 
+    while(result.some(function(item, index, arr) {
+        return item.toString().length >= bit;
+    })) {
+        initMark();
+        console.log(mark);
+        for(var i = 0; i < result.length; i++) {
+            var toStr = String(result[i]);
+            var value = 0;
+            if(toStr.length - bit >= 0){
+                value = toStr[toStr.length - bit];
+            }
+            console.log(toStr);
+            mark[value].push(result[i]);
+        }
+        result = [];
+        for(var j = 0; j < mark.length; j++) {
+            for(var m = 0; m < mark.length; m++) {
+                result.push(mark[j][m]);
+            }
+        }
+        mark = [[]];
+    }
+    return result;
 };
