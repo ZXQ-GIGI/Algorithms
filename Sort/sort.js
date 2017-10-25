@@ -191,36 +191,60 @@ Sort.prototype.mergeSort = function (array) {
 
 Sort.prototype.radixSort = function (array) {
     var result = array.slice(0);
-    var mark = [];
-    var bit = 1;
-    //init mark and length equals 10(0-9)
-    function initMark() {
-        for(var n = 0; n < 10; n++) {
-            mark[n] = [];
-        }
-    }
+    var positive = array.filter(function(item, index, arr) {
+        return item >= 0;
+    });
+    var negative = array.filter(function(item, index, arr) {
+        return item < 0;
+    });
 
-    while(result.some(function(item, index, arr) {
-        return item.toString().length >= bit;
-    })) {
-        initMark();
-        console.log(mark);
-        for(var i = 0; i < result.length; i++) {
-            var toStr = String(result[i]);
-            var value = 0;
-            if(toStr.length - bit >= 0){
-                value = toStr[toStr.length - bit];
-            }
-            console.log(toStr);
-            mark[value].push(result[i]);
-        }
-        result = [];
-        for(var j = 0; j < mark.length; j++) {
-            for(var m = 0; m < mark.length; m++) {
-                result.push(mark[j][m]);
+
+    function positiveSort(arr, isPositive) {
+
+
+        //init mark and length equals 10(0-9)
+        function initMark() {
+            for(var n = 0; n < 10; n++) {
+                mark[n] = [];
             }
         }
-        mark = [[]];
+        var mark = [];
+        var bit = 1;
+        if(!isPositive) {
+            arr = arr.map(function(item) {
+                return Math.abs(item);
+            });
+        }
+        //console.log(arr);
+
+        while(arr.some(function(item, index, arr) {
+            return item.toString().length >= bit;
+        })) {
+            initMark();
+            for(var i = 0; i < arr.length; i++) {
+                var toStr = String(arr[i]);
+                var value = 0;
+                if(toStr.length - bit >= 0){
+                    value = toStr[toStr.length - bit];
+                }
+                mark[value].push(arr[i]);
+            }
+            arr = [];
+            for(var j = 0; j < mark.length; j++) {
+                for(var m = 0; m < mark[j].length; m++) {
+                    arr.push(mark[j][m]);
+                }
+            }
+            bit++;
+        }
+        if(!isPositive) {
+            arr = arr.map(function(item) {
+                return -item;
+            }).reverse();
+        }
+        return arr;
     }
-    return result;
+    negative = positiveSort(negative, false);
+    positive = positiveSort(positive, true);
+    return negative.concat(positive);
 };
