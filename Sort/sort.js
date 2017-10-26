@@ -1,4 +1,3 @@
-
 module.exports = Sort;
 
 function Sort(array) {
@@ -9,9 +8,11 @@ Sort.prototype.straightInsertionSort = function (array) {
     for(var i = 1; i < result.length; i++) {
         if(result[i-1] > result[i]) {
             var index = i - 1;
+            // forward to search for insertion location of current value
             while(result[index] > result[i] && index >= 0){
                 index--;
             }
+            // insert current value and remove original position value
             result.splice(index + 1, 0, result[i]);
             result.splice(i + 1, 1);
         }
@@ -20,10 +21,11 @@ Sort.prototype.straightInsertionSort = function (array) {
 };
 
 Sort.prototype.shellInsertionSort = function (array) {
-    var result = array.slice(0);
-    var gap = Math.floor(result.length / 2);
+    var result = array.slice(0),
+        gap = Math.floor(result.length / 2);
     while(gap >= 1) {
         for(var i = gap; i < result.length; i++) {
+            // use straight insertion sort, but the decreasing value equals gap
             if(result[i - gap] > result[i]) {
                 var index = i - gap;
                 while(result[index] > result[i] && index >= 0){
@@ -62,12 +64,15 @@ Sort.prototype.heapSort = function (array) {
         while(index <= array.length) {
             var lChild = index * 2,
                 rChild = lChild + 1;
+            // when left child does not exist, it means current node has no child
             if(lChild > array.length) {
                 return;
             }
+            // left child exists and right child does not exist
             if(lChild + 1 > array.length) {
                 rChild--;
             }
+            // select smaller one of two children
             var min = array[lChild - 1] <= array[rChild - 1] ? lChild : rChild;
             if(array[index - 1] > array[min - 1]) {
                 var tmp = array[index - 1];
@@ -125,11 +130,13 @@ Sort.prototype.bubbleSort = function (array) {
 };
 
 Sort.prototype.quickSort = function (array) {
+    // get correct osition of cardinal number
     function partition(array, low, high) {
         var i = low,
             j = high,
             key = array[i];
         while(i < j) {
+            // from right to left to search element smaller than cardinal number and exchange
             while(array[j] >= key && j > i) {
                 j--;
             }
@@ -137,6 +144,7 @@ Sort.prototype.quickSort = function (array) {
                 array[i] = array[j];
                 array[j] = key;
             }
+            // from left to right to search element larger than cardinal number and exchange
             while(array[i] <= key && j > i) {
                 i++;
             }
@@ -152,8 +160,9 @@ Sort.prototype.quickSort = function (array) {
             return;
         }
         var pos = partition(array, low, high);
-        dfs(array, 0, pos - 1);
-        dfs(array, pos + 1, high);
+        // the left and right sides of the base position continue to be searched
+        dfs(array, 0, pos - 1);         //left
+        dfs(array, pos + 1, high);      //right
     }
     var result = array.slice(0);
     dfs(result, 0, result.length - 1);
@@ -162,11 +171,13 @@ Sort.prototype.quickSort = function (array) {
 
 Sort.prototype.mergeSort = function (array) {
     var result = array.slice(0);
+    // initialize result and make each element an array
     for(var i = 0; i < result.length; i++) {
         result[i] = [result[i]];
     }
 
     for(var i = 0; i <= result.length; i++) {
+        // when length equals 1 , it means all sorts are done
         if(result.length == 1) {
             return result[0];
         }
@@ -175,7 +186,7 @@ Sort.prototype.mergeSort = function (array) {
             var right = result[i + 1];
             var tmp = [];
             while(left.length > 0 || right.length > 0) {
-                if(left[0] <= right[0] || (left[0] && right[0]) == undefined) {
+                if(left[0] <= right[0] || (left[0] && right[0] == undefined)) {
                     tmp.push(left.shift());
                 }
                 if(left[0] > right[0] || (left[0] == undefined && right[0])){
@@ -190,40 +201,37 @@ Sort.prototype.mergeSort = function (array) {
 };
 
 Sort.prototype.radixSort = function (array) {
-    var result = array.slice(0);
-    var positive = array.filter(function(item, index, arr) {
-        return item >= 0;
-    });
-    var negative = array.filter(function(item, index, arr) {
-        return item < 0;
+    var result = array.slice(0),
+        positive = array.filter(function(item, index, arr) {
+        return item >= 0; // get '0' and positive array
+    }),
+        negative = array.filter(function(item, index, arr) {
+        return item < 0; //get negative array
     });
 
 
     function positiveSort(arr, isPositive) {
-
-
-        //init mark and length equals 10(0-9)
+        // initialize mark and length equals 10(0-9)
         function initMark() {
             for(var n = 0; n < 10; n++) {
                 mark[n] = [];
             }
         }
-        var mark = [];
-        var bit = 1;
+        var mark = [],
+            bit = 1; // the initial bit is units' digit
+        // get the abssolute value of the negative array
         if(!isPositive) {
             arr = arr.map(function(item) {
                 return Math.abs(item);
             });
         }
-        //console.log(arr);
-
         while(arr.some(function(item, index, arr) {
             return item.toString().length >= bit;
         })) {
-            initMark();
+            initMark(); // initialize the mark container
             for(var i = 0; i < arr.length; i++) {
-                var toStr = String(arr[i]);
-                var value = 0;
+                var toStr = String(arr[i]),
+                    value = 0;
                 if(toStr.length - bit >= 0){
                     value = toStr[toStr.length - bit];
                 }
@@ -237,6 +245,7 @@ Sort.prototype.radixSort = function (array) {
             }
             bit++;
         }
+        // restore and reverse the original negative array
         if(!isPositive) {
             arr = arr.map(function(item) {
                 return -item;
@@ -244,7 +253,7 @@ Sort.prototype.radixSort = function (array) {
         }
         return arr;
     }
-    negative = positiveSort(negative, false);
-    positive = positiveSort(positive, true);
+    negative = positiveSort(negative, false); // negative part
+    positive = positiveSort(positive, true);  // positive part
     return negative.concat(positive);
 };
