@@ -24,8 +24,8 @@ function reversePolishNotation(str) {
         }
         return result;
     }
-
-    function getWeight(op) {
+    //计算权重
+    function w(op) {
         if(op == '+' || op == '-') {
             return 1;
         }
@@ -35,51 +35,49 @@ function reversePolishNotation(str) {
     }
 
     var expr = getExpression(str);
+    console.log(expr);
     var rpnExpr = [];       //逆波兰式表达式
     var operStack = [];     //运算符栈
 
     for(var i = 0; i < expr.length; i++) {
-        console.log("i:" + i);
-        //如果是数据,进队列
+        console.log("i:" + i + " " + expr[i]);
+        //如果是数据,进结果栈
         if(isOper(expr[i]) == DAT) {
             rpnExpr.push(expr[i]);
         }
-        //如果是左括号，进栈
+        //如果是左括号，进运算符栈
         if(expr[i] == '(') {
             operStack.push(expr[i]);
         }
-        //如果是右括号，数据出队列
+        //如果是右括号，依次出栈顶元素，直到遇到左括号
         if(expr[i] == ')') {
-            while(operStack.length > 0 && [operStack.length - 1] != '(') {
-                rpnExpr.push(operStack.pop());
+            while(operStack.length > 0) {
+                if(operStack[operStack.length - 1] == '(') {
+                    operStack.pop(); //左括号出栈
+                    break;
+                } else {
+                    rpnExpr.push(operStack.pop());
+                }
             }
-            operStack.pop(); //左括号出栈
         }
+        //如果是运算符，比较当前元素和运算符栈顶元素的权重
         if(isOper(expr[i]) == OPE) {
-            if(operStack[operStack.length - 1] == '(') {
-                operStack.push(expr[i]);
-            } else {
-                //如果运算符比栈顶元素优先级高或者栈为空，运算符进栈
-                if(getWeight(expr[i]) > getWeight(operStack[operStack.length - 1]) || operStack.length == 0) {
+            while(operStack.length > 0) {
+                if(operStack[operStack.length - 1] == '(' || w(expr[i]) > w(operStack[operStack.length - 1])) {
                     operStack.push(expr[i]);
+                    break;
                 }
-                else {
-                    while(dataQueue.length > 0 ) {
-                        rpnExpr.push(dataQueue.shift());
-                    }
-                    while(operStack.length > 0 && operStack[operStack.length - 1] != '(' && getWeight(expr[i]) <= getWeight(operStack[operStack.length - 1])) {
-                        rpnExpr.push(operStack.pop());
-                    }
-                    operStack.push(expr[i])
+                else if(w(expr[i]) <= w(operStack[operStack.length - 1])) {
+                    rpnExpr.push(operStack.pop());
                 }
             }
+            if(operStack.length === 0) {
+                operStack.push(expr[i]);
+            }
         }
-        while(operStack.length > 0) {
-            rpnExpr.push(operStack.pop());
-        }
-        console.log(dataQueue);
-        console.log(operStack);
-        console.log(rpnExpr);
+    }
+    while(operStack.length > 0) {
+        rpnExpr.push(operStack.pop());
     }
     return rpnExpr;
 }
