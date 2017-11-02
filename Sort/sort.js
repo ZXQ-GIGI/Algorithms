@@ -137,20 +137,36 @@ Sort.prototype.quickSort = function (array) {
             key = array[i];
         while(i < j) {
             // from right to left to search element smaller than cardinal number and exchange
-            while(array[j] >= key && j > i) {
+            // while(array[j] >= key && j > i) {
+            //     j--;
+            // }
+            // if(array[j] < key) {
+            //     array[i] = array[j];
+            //     array[j] = key;
+            // }
+            while(i < j) {
+                if(array[j] < key) {
+                    array[i] = array[j];
+                    array[j] = key;
+                    break;
+                }
                 j--;
             }
-            if(array[j] < key) {
-                array[i] = array[j];
-                array[j] = key;
-            }
             // from left to right to search element larger than cardinal number and exchange
-            while(array[i] <= key && j > i) {
+            // while(array[i] <= key && j > i) {
+            //     i++;
+            // }
+            // if(array[i] > key) {
+            //     array[j] = array[i];
+            //     array[i] = key;
+            // }
+            while(i < j) {
+                if(array[i] > key) {
+                    array[j] = array[i];
+                    array[i] = key;
+                    break;
+                }
                 i++;
-            }
-            if(array[i] > key) {
-                array[j] = array[i];
-                array[i] = key;
             }
         }
         return i;
